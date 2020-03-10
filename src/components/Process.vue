@@ -28,11 +28,11 @@ export default class Process extends Vue {
   }
 
   public get completedHeight() {
-    return this.process.usedTime * this.timeUnitToPixelRatio;
+    return this.process.timeLeft * this.timeUnitToPixelRatio;
   }
 
   public get isFinished() {
-    return this.process.usedTime === 0;
+    return this.process.timeLeft === 0;
   }
 }
 </script>
@@ -54,7 +54,7 @@ div.process {
 
   div.completedOverlay {
     width: 100%;
-    background-color: green;
+    background-color: rgba(9, 121, 9, 0.781);
   }
 }
 </style>

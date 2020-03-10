@@ -1,7 +1,7 @@
 export interface IProcess {
   id: string;
   neededTime: number;
-  usedTime: number;
+  timeLeft: number;
   totalWaitingTime: number;
 }
 

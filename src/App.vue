@@ -137,7 +137,7 @@ export default class App extends Vue {
     return {
       id: `asdasdasdasdasd`,
       neededTime: Math.floor(Math.random() * 10) + 1,
-      usedTime: Math.floor(Math.random() * 4) + 1,
+      timeLeft: Math.floor(Math.random() * 4) + 1,
       totalWaitingTime: 0
     } as IProcess;
   }
@@ -160,8 +160,8 @@ export default class App extends Vue {
         const currentProcess = this.processes[i % length];
 
         if (running) {
-          if (currentProcess.usedTime >= 1) {
-            this.processes[i % length].usedTime += -1;
+          if (currentProcess.timeLeft >= 1) {
+            this.processes[i % length].timeLeft += -1;
             requestAnimationFrame(() => this.animatedFcfs(i + 1));
           } else {
             requestAnimationFrame(() => this.animatedFcfs(i + 1, true));

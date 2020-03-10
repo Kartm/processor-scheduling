@@ -10,6 +10,7 @@ module.exports = {
     quotes: [2, "double", { avoidEscape: true, allowTemplateLiterals: true }],
     "no-extra-semi": "off",
     semi: [2, "always"],
-    "space-before-function-paren": ["error", "never"]
+    "space-before-function-paren": ["error", "never"],
+    "@typescript-eslint/interface-name-prefix": ["off"]
   }
 };
