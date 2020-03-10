@@ -20,7 +20,7 @@ div.info-box {
   position: relative;
   border: 1px #3f3f3f solid;
   box-sizing: content-box;
-  padding: 10px;
+  padding: 30px;
 
   .title {
     position: absolute;
