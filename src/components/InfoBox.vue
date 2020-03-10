@@ -34,6 +34,7 @@ div.info-box {
   }
 
   .content {
+    display: flex;
     height: 100%;
   }
 }

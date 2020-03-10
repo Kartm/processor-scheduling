@@ -1,11 +1,7 @@
 <template>
   <div class="processes">
     <div class="processes-wrapper">
-      <Process
-        v-for="process in processes"
-        :key="process.id"
-        :process="process"
-      />
+      <Process v-for="(process, i) in processes" :key="i" :process="process" />
     </div>
   </div>
 </template>

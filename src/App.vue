@@ -7,6 +7,32 @@
     </div>
     <InfoBox title="Actions">
       <div class="actions">
+        <div>Animation speed</div>
+        <span>
+          <button
+            @click="
+              () => {
+                onChangeAnimationSpeed(-1);
+              }
+            "
+            class="modify decrease"
+          >
+            -1
+          </button>
+          <span class="process-count-number">{{ animationSpeed }}</span>
+          <button
+            @click="
+              () => {
+                onChangeAnimationSpeed(1);
+              }
+            "
+            class="modify increase"
+          >
+            +1
+          </button>
+        </span>
+        <hr />
+        <div>Process count</div>
         <span>
           <button
             @click="
@@ -14,17 +40,18 @@
                 onChangeProcessNumbers(-1);
               }
             "
-            class="modify-decrease"
+            class="modify decrease"
           >
             -1
           </button>
+          <span class="process-count-number">{{ numberOfProcesses }}</span>
           <button
             @click="
               () => {
                 onChangeProcessNumbers(1);
               }
             "
-            class="modify-increase"
+            class="modify increase"
           >
             +1
           </button>
@@ -32,11 +59,18 @@
         <button class="randomize" @click="onGenerateRandomButton">
           Randomize processes
         </button>
+        <hr />
+        <button disabled>
+          Generate pyramid
+        </button>
+        <button disabled>
+          Generate triangle
+        </button>
       </div>
     </InfoBox>
     <InfoBox title="Algorithms">
       <form class="algorithms" @submit.prevent="onStartButton">
-        <input type="radio" id="fcfs" name="algorithm" value="0" />
+        <input type="radio" id="fcfs" name="algorithm" value="0" checked />
         <label for="fcfs">FCFS</label><br />
         <input type="radio" id="sjf" name="algorithm" value="1" />
         <label for="sjf">SJF</label><br />
@@ -45,6 +79,7 @@
         <input type="radio" id="rot" name="algorithm" value="3" />
         <label for="other">ROT</label><br />
         <button type="submit">Run</button>
+        <div><button>Pause</button> <button>Stop</button></div>
       </form>
     </InfoBox>
   </div>
@@ -66,19 +101,27 @@ export default class App extends Vue {
   public processes: IProcess[] = [];
 
   public numberOfProcesses = 10;
+  public animationSpeed = 4;
 
   private mounted() {
     this.onGenerateRandomButton();
   }
 
   public onChangeProcessNumbers(change: number) {
-    console.log(change);
     if (change > 0 && this.numberOfProcesses < 26) {
       this.numberOfProcesses += change;
       this.processes.push(this.generateRandomProcess());
     } else if (change < 0 && this.numberOfProcesses > 1) {
       this.numberOfProcesses += change;
       this.processes.pop();
+    }
+  }
+
+  public onChangeAnimationSpeed(change: number) {
+    if (change > 0 && this.animationSpeed < 10) {
+      this.animationSpeed += change;
+    } else if (change < 0 && this.animationSpeed > 1) {
+      this.animationSpeed += change;
     }
   }
 
@@ -106,27 +149,33 @@ export default class App extends Vue {
     }
   }
 
-  private animatedFcfs(i: number) {
-    setTimeout(() => {
-      if (true) {
+  private animatedFcfs(i: number, skipNextTimeout = false) {
+    // todo draw progress line
+
+    setTimeout(
+      () => {
         const { length } = this.processes;
-        this.processes[i % length].usedTime += -1;
-      }
 
-      // todo draw progress line
+        const running = true;
+        const currentProcess = this.processes[i % length];
 
-      // is next process finished
-
-      requestAnimationFrame(() => this.animatedFcfs(i + 1));
-    }, 250);
+        if (running) {
+          if (currentProcess.usedTime >= 1) {
+            this.processes[i % length].usedTime += -1;
+            requestAnimationFrame(() => this.animatedFcfs(i + 1));
+          } else {
+            requestAnimationFrame(() => this.animatedFcfs(i + 1, true));
+          }
+        }
+      },
+      skipNextTimeout ? 0 : 1000 * (1 / this.animationSpeed)
+    );
   }
 
   public executeAlgorithm(alg: Algorithm) {
     switch (+alg) {
       // first come first serve
       case Algorithm.fcfs: {
-        console.log("fcfs start");
-
         const animationDelay = 250;
         const running = true;
         const cpuSingleWork = 10;
@@ -135,7 +184,6 @@ export default class App extends Vue {
         break;
       }
       default: {
-        console.log("default");
         break;
       }
     }
@@ -164,7 +212,7 @@ $verticalMargin: 60px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-auto-rows: min-content;
-  gap: 20px;
+  gap: 40px;
 
   div.main-view {
     grid-column: span 3;
@@ -175,8 +223,12 @@ $verticalMargin: 60px;
     }
   }
 
+  div.info-box {
+    height: 100%;
+  }
+
   form.algorithms {
-    margin-top: 10px;
+    margin: auto;
     text-align: left;
     input,
     label {
@@ -198,13 +250,17 @@ $verticalMargin: 60px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 10px;
     height: 100%;
-    button.randomize {
+    margin: auto;
+    button {
+      margin-top: 10px;
     }
 
-    button.reset {
-      margin-top: 10px;
+    span.process-count-number {
+      display: inline-block;
+      font-size: 12px;
+      width: 40px;
+      opacity: 0.6;
     }
   }
 }
