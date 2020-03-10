@@ -1,5 +1,9 @@
 <template>
-  <div class="process" :style="{ minHeight: `${totalHeight}px` }">
+  <div
+    class="process"
+    :class="{ finished: isFinished }"
+    :style="{ minHeight: `${totalHeight}px` }"
+  >
     <div class="completedOverlay" :style="{ height: `${completedHeight}px` }" />
   </div>
 </template>
@@ -27,8 +31,8 @@ export default class Process extends Vue {
     return this.process.usedTime * this.timeUnitToPixelRatio;
   }
 
-  mounted() {
-    console.log(this.process);
+  public get isFinished() {
+    return this.process.usedTime === 0;
   }
 }
 </script>
@@ -36,11 +40,18 @@ export default class Process extends Vue {
 <style scoped lang="scss">
 div.process {
   width: 16px;
-  background-color: #efefef;
+  background-color: #d6d6d6;
   border: solid #3f3f3f 1px;
   box-sizing: border-box;
   display: flex;
   align-items: flex-end;
+  opacity: 0.8;
+
+  &.finished {
+    transition: opacity linear 0.25s;
+    opacity: 0.4;
+  }
+
   div.completedOverlay {
     width: 100%;
     background-color: green;
