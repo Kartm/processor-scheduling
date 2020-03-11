@@ -72,7 +72,7 @@ const limits = {
   minProcessNumber: 1,
   maxProcessNumber: 26,
   minAnimationSpeed: 1,
-  maxAnimationSpeed: 10
+  maxAnimationSpeed: 20
 };
 
 @Component

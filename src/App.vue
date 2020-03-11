@@ -29,7 +29,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { IProcess, Algorithm } from "./store/models.interface";
-import { averageWaitingTimeFcfs } from "./methods/process";
+import {
+  averageWaitingTimeFcfs,
+  generateRandomProcess
+} from "./methods/process";
+import { animatedFcfs, animatedRot } from "./methods/algorithms";
 import InfoBox from "./components/InfoBox.vue";
 import Processes from "./components/Processes.vue";
 import AlgorithmSelect from "./components/AlgorithmSelect.vue";
@@ -58,7 +62,7 @@ export default class App extends Vue {
   public onChangeProcessNumbers(change: number) {
     if (change > 0) {
       this.numberOfProcesses += change;
-      this.processes.push(this.generateRandomProcess());
+      this.processes.push(generateRandomProcess());
     } else if (change < 0) {
       this.numberOfProcesses += change;
       this.processes.pop();
@@ -72,64 +76,9 @@ export default class App extends Vue {
   public onGenerateRandomButton() {
     const generatedProcesses = [];
     for (let i = 0; i < this.numberOfProcesses; i++) {
-      generatedProcesses.push(this.generateRandomProcess());
+      generatedProcesses.push(generateRandomProcess());
     }
     this.processes = generatedProcesses;
-  }
-
-  public generateRandomProcess() {
-    const randomTime = Math.floor(Math.random() * 10) + 1;
-    return {
-      id: `asdasdasdasdasd`,
-      neededTime: randomTime,
-      timeLeft: randomTime,
-      totalWaitingTime: 0
-    } as IProcess;
-  }
-
-  private animatedFcfs(i = 0, skipNextTimeout = false) {
-    setTimeout(
-      () => {
-        const { length } = this.processes;
-
-        const currentProcess = this.processes[i % length];
-
-        if (this.isAnimationRunning) {
-          if (currentProcess.timeLeft >= 1) {
-            this.processes[i % length].timeLeft += -1;
-
-            let nextIndex = i;
-            if (currentProcess.timeLeft === 0) {
-              nextIndex++;
-            }
-            requestAnimationFrame(() => this.animatedFcfs(nextIndex % length));
-          } else {
-            requestAnimationFrame(() => this.animatedFcfs(i + 1, true));
-          }
-        }
-      },
-      skipNextTimeout ? 0 : 1000 * (1 / this.animationSpeed)
-    );
-  }
-
-  private animatedRot(i = 0, skipNextTimeout = false) {
-    setTimeout(
-      () => {
-        const { length } = this.processes;
-
-        const currentProcess = this.processes[i % length];
-
-        if (this.isAnimationRunning) {
-          if (currentProcess.timeLeft >= 1) {
-            this.processes[i % length].timeLeft += -1;
-            requestAnimationFrame(() => this.animatedRot(i + 1));
-          } else {
-            requestAnimationFrame(() => this.animatedRot(i + 1, true));
-          }
-        }
-      },
-      skipNextTimeout ? 0 : 1000 * (1 / this.animationSpeed)
-    );
   }
 
   public onSelectAlgorithm(alg: Algorithm) {
@@ -142,11 +91,19 @@ export default class App extends Vue {
     switch (+(this.selectedAlgorithm as Algorithm)) {
       // first come first serve
       case Algorithm.fcfs: {
-        this.animatedFcfs();
+        animatedFcfs(
+          this.processes,
+          this.isAnimationRunning,
+          this.animationSpeed
+        );
         break;
       }
       case Algorithm.rot: {
-        this.animatedRot();
+        animatedRot(
+          this.processes,
+          this.isAnimationRunning,
+          this.animationSpeed
+        );
         break;
       }
 
