@@ -50,6 +50,36 @@
       </button>
     </span>
     <hr />
+    <label :style="[isRotSelected ? {} : { visibility: 'hidden' }]"
+      >Time window</label
+    >
+    <span
+      class="option"
+      :style="[isRotSelected ? {} : { visibility: 'hidden' }]"
+    >
+      <button
+        @click="
+          () => {
+            onChangeTimeQuantum(-1);
+          }
+        "
+        class="modify decrease"
+      >
+        -1
+      </button>
+      <span class="process-count-number">{{ timeQuantum }}</span>
+      <button
+        @click="
+          () => {
+            onChangeTimeQuantum(1);
+          }
+        "
+        class="modify increase"
+      >
+        +1
+      </button>
+    </span>
+    <hr />
     <button
       :disabled="isAnimationRunning"
       class="randomize"
@@ -64,17 +94,12 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { IProcess, Algorithm } from "../store/models.interface";
 
-const limits = {
-  minProcessNumber: 1,
-  maxProcessNumber: 26,
-  minAnimationSpeed: 1,
-  maxAnimationSpeed: 20
-};
-
 @Component
 export default class ActionSelect extends Vue {
   @Prop({ type: Number, required: true }) numberOfProcesses!: number;
   @Prop({ type: Number, required: true }) animationSpeed!: number;
+  @Prop({ type: Number, required: true }) timeQuantum!: number;
+  @Prop({ type: Number, required: true }) selectedAlgorithm!: number;
   @Prop({ required: true, type: Boolean }) isAnimationRunning!: boolean;
 
   private mounted() {
@@ -82,20 +107,23 @@ export default class ActionSelect extends Vue {
   }
 
   public onChangeProcessNumbers(change: number) {
-    if (
-      this.numberOfProcesses < limits.maxProcessNumber &&
-      this.numberOfProcesses > limits.minProcessNumber
-    ) {
-      this.$emit("onChangeProcessNumbers", change);
-    }
+    this.$emit("onChangeProcessNumbers", change);
   }
 
   public onChangeAnimationSpeed(change: number) {
     this.$emit("onChangeAnimationSpeed", change);
   }
 
+  public onChangeTimeQuantum(change: number) {
+    this.$emit("onChangeTimeQuantum", change);
+  }
+
   public onGenerateRandomButton() {
     this.$emit("onGenerateRandomButton", null);
+  }
+
+  public get isRotSelected() {
+    return this.selectedAlgorithm === Algorithm.rot;
   }
 }
 </script>

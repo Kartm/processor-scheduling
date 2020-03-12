@@ -9,9 +9,12 @@
       <ActionSelect
         :numberOfProcesses="state.numberOfProcesses"
         :animationSpeed="state.animationSpeed"
+        :timeQuantum="state.timeQuantum"
         :isAnimationRunning="state.isAnimationRunning"
+        :selectedAlgorithm="state.selectedAlgorithm"
         @onChangeProcessNumbers="onChangeProcessNumbers"
         @onChangeAnimationSpeed="onChangeAnimationSpeed"
+        @onChangeTimeQuantum="onChangeTimeQuantum"
         @onGenerateRandomButton="onGenerateRandomButton"
       />
     </InfoBox>
@@ -28,7 +31,7 @@
         <span>Average waiting time</span>
         <span>{{ avgWaitingTime }}</span>
         <span v-if="isRotSelected">Time window</span>
-        <span v-if="isRotSelected">{{ timeWindow }}</span>
+        <span v-if="isRotSelected">{{ state.timeQuantum }}</span>
       </div>
     </InfoBox>
   </div>
@@ -72,6 +75,10 @@ export default class App extends Vue {
 
   public onChangeAnimationSpeed(change: number) {
     store.commit("incrementAnimationSpeed", { amount: change });
+  }
+
+  public onChangeTimeQuantum(change: number) {
+    store.commit("incrementTimeQuantum", { amount: change });
   }
 
   public onGenerateRandomButton() {
@@ -150,6 +157,10 @@ $verticalMargin: 60px;
 
     & > span:nth-child(even) {
       text-align: center;
+    }
+
+    & > span:nth-child(odd) {
+      padding: 10px 0;
     }
   }
 }

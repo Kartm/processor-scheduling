@@ -5,27 +5,67 @@ import { IProcess, Algorithm } from "./models.interface";
 
 Vue.use(Vuex);
 
+const limits = {
+  minProcessNumber: 0,
+  maxProcessNumber: 28,
+  minAnimationSpeed: 1,
+  maxAnimationSpeed: 30,
+  minTimeQuantum: 1,
+  maxTimeQuantum: 100
+};
+
+const defaultValues = {
+  numberOfProcesses: Math.round(
+    (limits.minProcessNumber + limits.maxProcessNumber) / 2
+  ),
+  animationSpeed: Math.round(
+    (limits.minAnimationSpeed + limits.maxAnimationSpeed) / 2
+  ),
+  timeQuantum: 1
+};
+
 export default new Vuex.Store({
   state: {
     initialProcesses: [] as IProcess[],
     processes: [] as IProcess[],
-    selectedAlgorithm: null as Algorithm | null,
-    numberOfProcesses: 10,
-    animationSpeed: 10,
+    selectedAlgorithm: 0 as Algorithm | null,
+    numberOfProcesses: defaultValues.numberOfProcesses,
+    animationSpeed: defaultValues.animationSpeed,
     isAnimationRunning: false,
-    timeWindow: 0
+    timeQuantum: defaultValues.timeQuantum
   },
   mutations: {
     incrementProcessCount(state, payload) {
-      state.numberOfProcesses += payload.amount;
-      if (payload.amount > 0) {
-        state.processes.push(generateRandomProcess());
-      } else {
-        state.processes.pop();
+      const newNumberOfProcesses = state.numberOfProcesses + payload.amount;
+      if (
+        newNumberOfProcesses >= limits.minProcessNumber &&
+        newNumberOfProcesses <= limits.maxProcessNumber
+      ) {
+        state.numberOfProcesses = newNumberOfProcesses;
+        if (payload.amount > 0) {
+          state.processes.push(generateRandomProcess());
+        } else {
+          state.processes.pop();
+        }
       }
     },
     incrementAnimationSpeed(state, payload) {
-      state.animationSpeed += payload.amount;
+      const newAnimationSpeed = state.animationSpeed + payload.amount;
+      if (
+        newAnimationSpeed >= limits.minAnimationSpeed &&
+        newAnimationSpeed <= limits.maxAnimationSpeed
+      ) {
+        state.numberOfProcesses = newAnimationSpeed;
+      }
+    },
+    incrementTimeQuantum(state, payload) {
+      const newTimeQuantum = state.timeQuantum + payload.amount;
+      if (
+        newTimeQuantum >= limits.minTimeQuantum &&
+        newTimeQuantum <= limits.maxTimeQuantum
+      ) {
+        state.timeQuantum = newTimeQuantum;
+      }
     },
     randomizeProcesses(state) {
       const generatedProcesses = [];

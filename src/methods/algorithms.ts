@@ -173,22 +173,53 @@ export const averageWaitingTimePsjf = () => {
 };
 
 export const averageWaitingTimeRot = () => {
-  const { processes } = store.state;
-
-  const timeWindow = 3;
-
+  const { processes, timeQuantum } = store.state;
   const clonedProcesses = processes.map(process => ({ ...process }));
-  // while (!isEveryProcessFinished(clonedProcesses)) {
-  //   // todo preemprive allow addition
-  // }
 
-  let accelerator = 0;
+  let time = 0;
 
-  for (let i = 0; i < processes.length - 1; i++) {
-    accelerator += accelerator + processes[i].neededTime;
+  const waitingTimes = clonedProcesses.map(() => {
+    return 0;
+  });
+
+  let isDone = false;
+
+  while (!isDone) {
+    isDone = true;
+    for (let i = 0; i < clonedProcesses.length; i++) {
+      const process = clonedProcesses[i];
+
+      // process further
+      if (process.timeLeft > 0) {
+        isDone = false;
+
+        if (process.timeLeft > timeQuantum) {
+          time += timeQuantum;
+          process.timeLeft -= timeQuantum;
+        } else {
+          // last cycle for the process
+
+          // add needed processing time to the time
+          time += process.timeLeft;
+
+          waitingTimes[i] = time - process.neededTime;
+
+          process.timeLeft = 0;
+        }
+      }
+
+      if (isDone) {
+        break;
+      }
+    }
   }
 
-  const avg = accelerator / processes.length;
+  let totalWaitingTime = 0;
+  for (let i = 0; i < waitingTimes.length; i++) {
+    totalWaitingTime += waitingTimes[i];
+  }
+
+  const avg = totalWaitingTime / waitingTimes.length;
   return roundTwoDecimals(avg);
 };
 
