@@ -3,7 +3,6 @@
     <label>Animation speed</label>
     <span class="option">
       <button
-        :disabled="isAnimationRunning"
         @click="
           () => {
             onChangeAnimationSpeed(-1);
@@ -15,7 +14,6 @@
       </button>
       <span class="process-count-number">{{ animationSpeed }}</span>
       <button
-        :disabled="isAnimationRunning"
         @click="
           () => {
             onChangeAnimationSpeed(1);
@@ -93,12 +91,7 @@ export default class ActionSelect extends Vue {
   }
 
   public onChangeAnimationSpeed(change: number) {
-    if (
-      this.animationSpeed < limits.maxAnimationSpeed &&
-      this.animationSpeed > limits.minAnimationSpeed
-    ) {
-      this.$emit("onChangeAnimationSpeed", change);
-    }
+    this.$emit("onChangeAnimationSpeed", change);
   }
 
   public onGenerateRandomButton() {
@@ -119,6 +112,10 @@ div.actions {
   label {
     font-size: 14px;
     margin-bottom: 4px;
+  }
+
+  button {
+    cursor: pointer;
   }
 
   span.process-count-number {

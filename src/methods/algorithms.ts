@@ -1,51 +1,42 @@
-import { IProcess } from "@/store/models.interface";
+import { IProcess, Algorithm } from "@/store/models.interface";
+import store from "../store/index";
 
-export interface IAnimationInfo {
-  animationFinishHandler: () => any;
-  processes: IProcess[];
-  animationSpeed: number;
-}
-
-const isEveryProcessFinished = (processes: IProcess[]) => {
-  return processes.every(process => {
+const isEveryProcessFinished = () => {
+  return store.state.processes.every(process => {
     return process.timeLeft === 0;
   });
 };
 
-export const animatedFcfs = (
-  info: IAnimationInfo,
-  i = 0,
-  skipNextTimeout = false
-) => {
-  if (isEveryProcessFinished(info.processes)) {
-    info.animationFinishHandler();
+export const animatedFcfs = (i = 0, skipNextTimeout = false) => {
+  if (isEveryProcessFinished()) {
+    store.commit("changeAnimationState", { change: false });
     return;
   }
 
   setTimeout(
     () => {
-      const { length } = info.processes;
+      const { length } = store.state.processes;
 
-      const currentProcess = info.processes[i % length];
+      const currentProcess = store.state.processes[i % length];
 
       if (currentProcess.timeLeft >= 1) {
-        info.processes[i % length].timeLeft += -1;
+        store.state.processes[i % length].timeLeft += -1;
 
         let nextIndex = i;
         if (currentProcess.timeLeft === 0) {
           nextIndex++;
         }
-        requestAnimationFrame(() => animatedFcfs(info, nextIndex % length));
+        requestAnimationFrame(() => animatedFcfs(nextIndex % length));
       } else {
-        requestAnimationFrame(() => animatedFcfs(info, i + 1, true));
+        requestAnimationFrame(() => animatedFcfs(i + 1, true));
       }
     },
-    skipNextTimeout ? 0 : 1000 * (1 / info.animationSpeed)
+    skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
   );
 };
 
-const getShortestProcess = (processes: IProcess[]) => {
-  const sortedUnfinished = [...processes]
+const getShortestProcess = () => {
+  const sortedUnfinished = [...store.state.processes]
     .sort((a, b) => {
       return a.timeLeft - b.timeLeft;
     })
@@ -55,24 +46,23 @@ const getShortestProcess = (processes: IProcess[]) => {
   return sortedUnfinished[0] || null;
 };
 
-const getIndexOfShortest = (processes: IProcess[]) => {
-  return processes.indexOf(getShortestProcess(processes));
+const getIndexOfShortest = () => {
+  return store.state.processes.indexOf(getShortestProcess());
 };
 
 export const animatedSjf = (
-  info: IAnimationInfo,
-  i = getIndexOfShortest(info.processes),
+  i = getIndexOfShortest(),
   skipNextTimeout = false
 ) => {
   setTimeout(
     () => {
-      const { length } = info.processes;
+      const { length } = store.state.processes;
 
       // don't stop until finished
-      const currentProcess = info.processes[i % length];
+      const currentProcess = store.state.processes[i % length];
 
       if (currentProcess === null || currentProcess === undefined) {
-        info.animationFinishHandler();
+        store.commit("changeAnimationState", { change: false });
         return;
       }
 
@@ -81,32 +71,29 @@ export const animatedSjf = (
 
         let nextIndex = i;
         if (currentProcess.timeLeft === 0) {
-          nextIndex = info.processes.indexOf(
-            getShortestProcess(info.processes)
-          );
+          nextIndex = store.state.processes.indexOf(getShortestProcess());
         }
-        requestAnimationFrame(() => animatedSjf(info, nextIndex % length));
+        requestAnimationFrame(() => animatedSjf(nextIndex % length));
       } else {
-        requestAnimationFrame(() => animatedSjf(info, i + 1, true));
+        requestAnimationFrame(() => animatedSjf(i + 1, true));
       }
     },
-    skipNextTimeout ? 0 : 1000 * (1 / info.animationSpeed)
+    skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
   );
 };
 
 export const animatedPsjf = (
-  info: IAnimationInfo,
-  i = getIndexOfShortest(info.processes),
+  i = getIndexOfShortest(),
   skipNextTimeout = false
 ) => {
   setTimeout(
     () => {
-      const { length } = info.processes;
+      const { length } = store.state.processes;
 
-      const currentProcess = getShortestProcess(info.processes);
+      const currentProcess = getShortestProcess();
 
       if (currentProcess === null) {
-        info.animationFinishHandler();
+        store.commit("changeAnimationState", { change: false });
         return;
       }
 
@@ -117,39 +104,35 @@ export const animatedPsjf = (
         if (currentProcess.timeLeft === 0) {
           nextIndex++;
         }
-        requestAnimationFrame(() => animatedPsjf(info, nextIndex % length));
+        requestAnimationFrame(() => animatedPsjf(nextIndex % length));
       } else {
-        requestAnimationFrame(() => animatedPsjf(info, i + 1, true));
+        requestAnimationFrame(() => animatedPsjf(i + 1, true));
       }
     },
-    skipNextTimeout ? 0 : 1000 * (1 / info.animationSpeed)
+    skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
   );
 };
 
-export const animatedRot = (
-  info: IAnimationInfo,
-  i = 0,
-  skipNextTimeout = false
-) => {
-  if (isEveryProcessFinished(info.processes)) {
-    info.animationFinishHandler();
+export const animatedRot = (i = 0, skipNextTimeout = false) => {
+  if (isEveryProcessFinished()) {
+    store.commit("changeAnimationState", { change: false });
     return;
   }
 
   setTimeout(
     () => {
-      const { length } = info.processes;
+      const { length } = store.state.processes;
 
-      const currentProcess = info.processes[i % length];
+      const currentProcess = store.state.processes[i % length];
 
       if (currentProcess.timeLeft >= 1) {
-        info.processes[i % length].timeLeft += -1;
-        requestAnimationFrame(() => animatedRot(info, i + 1));
+        store.state.processes[i % length].timeLeft += -1;
+        requestAnimationFrame(() => animatedRot(i + 1));
       } else {
-        requestAnimationFrame(() => animatedRot(info, i + 1, true));
+        requestAnimationFrame(() => animatedRot(i + 1, true));
       }
     },
-    skipNextTimeout ? 0 : 1000 * (1 / info.animationSpeed)
+    skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
   );
 };
 
@@ -157,18 +140,21 @@ const roundTwoDecimals = (x: number) => {
   return Math.round(x * 100) / 100;
 };
 
-export const averageWaitingTimeFcfs = (processes: IProcess[]) => {
+export const averageWaitingTimeFcfs = () => {
+  const { processes } = store.state;
   let accelerator = 0;
 
-  for (let i = 0; i < processes.length - 1; i++) {
-    accelerator += accelerator + processes[i].neededTime;
+  for (let i = 0; i < store.state.processes.length - 1; i++) {
+    accelerator += accelerator + store.state.processes[i].neededTime;
   }
 
-  const avg = accelerator / processes.length;
+  const avg = accelerator / store.state.processes.length;
   return roundTwoDecimals(avg);
 };
 
-export const averageWaitingTimeSjf = (processes: IProcess[]) => {
+export const averageWaitingTimeSjf = () => {
+  const { processes } = store.state;
+
   const sortedProcesses = [...processes].sort((a, b) => {
     return a.neededTime - b.neededTime;
   });
@@ -182,11 +168,13 @@ export const averageWaitingTimeSjf = (processes: IProcess[]) => {
   return roundTwoDecimals(avg);
 };
 
-export const averageWaitingTimePsjf = (processes: IProcess[]) => {
-  return averageWaitingTimeSjf(processes);
+export const averageWaitingTimePsjf = () => {
+  return averageWaitingTimeSjf();
 };
 
-export const averageWaitingTimeRot = (processes: IProcess[]) => {
+export const averageWaitingTimeRot = () => {
+  const { processes } = store.state;
+
   const timeWindow = 3;
 
   const clonedProcesses = processes.map(process => ({ ...process }));
@@ -202,4 +190,48 @@ export const averageWaitingTimeRot = (processes: IProcess[]) => {
 
   const avg = accelerator / processes.length;
   return roundTwoDecimals(avg);
+};
+
+export const executeSelectedAlgorithm = () => {
+  switch (+(store.state.selectedAlgorithm as Algorithm)) {
+    case Algorithm.fcfs: {
+      animatedFcfs();
+      break;
+    }
+    case Algorithm.sjf: {
+      animatedSjf();
+      break;
+    }
+    case Algorithm.psjf: {
+      animatedPsjf();
+      break;
+    }
+    case Algorithm.rot: {
+      animatedRot();
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+};
+
+export const getAvgWaitingTime = () => {
+  switch (+(store.state.selectedAlgorithm as Algorithm)) {
+    case Algorithm.fcfs: {
+      return averageWaitingTimeFcfs();
+    }
+    case Algorithm.sjf: {
+      return averageWaitingTimeSjf();
+    }
+    case Algorithm.psjf: {
+      return averageWaitingTimePsjf();
+    }
+    case Algorithm.rot: {
+      return averageWaitingTimeRot();
+    }
+    default: {
+      return "?";
+    }
+  }
 };

@@ -1,7 +1,6 @@
 <template>
   <form class="algorithms" @submit.prevent="onRunAlgorithm">
     <input
-      :disabled="isAnimationRunning"
       @click="onAlgorithmSelect(0)"
       type="radio"
       id="fcfs"
@@ -11,7 +10,6 @@
     />
     <label for="fcfs">FCFS</label><br />
     <input
-      :disabled="isAnimationRunning"
       @click="onAlgorithmSelect(1)"
       type="radio"
       id="sjf"
@@ -20,7 +18,6 @@
     />
     <label for="sjf">SJF</label><br />
     <input
-      :disabled="isAnimationRunning"
       @click="onAlgorithmSelect(2)"
       type="radio"
       id="psjf"
@@ -29,14 +26,13 @@
     />
     <label for="psjf">preemptive SJF</label><br />
     <input
-      :disabled="isAnimationRunning"
       @click="onAlgorithmSelect(3)"
       type="radio"
       id="rot"
       name="algorithm"
       value="3"
     />
-    <label for="other">ROT</label><br />
+    <label for="rot">ROT</label><br />
     <button :disabled="isAnimationRunning" type="submit">Run</button>
     <div>
       <button :disabled="isAnimationRunning" type="button" @click="onReset">
@@ -77,12 +73,16 @@ form.algorithms {
   input,
   label {
     margin: 4px 0;
+    cursor: pointer;
   }
 
   label {
     margin-left: 4px;
   }
   button {
+    &:not(:disabled) {
+      cursor: pointer;
+    }
     display: block;
     margin: auto;
     margin-top: 10px;
