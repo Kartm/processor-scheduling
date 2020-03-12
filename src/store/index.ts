@@ -41,7 +41,10 @@ export default new Vuex.Store({
       state.initialProcesses = state.processes.map(process => ({ ...process }));
     },
     restoreInitialProcesses(state) {
-      state.processes = state.initialProcesses.map(process => ({ ...process }));
+      state.processes = state.initialProcesses.map(process => ({
+        ...process,
+        timeLeft: process.neededTime
+      }));
     },
     selectAlgorithm(state, payload) {
       state.selectedAlgorithm = payload.id;
