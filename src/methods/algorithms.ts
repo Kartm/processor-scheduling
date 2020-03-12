@@ -1,5 +1,9 @@
 import { IProcess } from "@/store/models.interface";
+
+export interface IAnimationInfo {}
+
 export const animatedFcfs = (
+  animationFinishHandler: () => any,
   processes: IProcess[],
   isAnimationRunning: boolean,
   animationSpeed: number,
@@ -22,6 +26,7 @@ export const animatedFcfs = (
           }
           requestAnimationFrame(() =>
             animatedFcfs(
+              animationFinishHandler,
               processes,
               isAnimationRunning,
               animationSpeed,
@@ -31,6 +36,7 @@ export const animatedFcfs = (
         } else {
           requestAnimationFrame(() =>
             animatedFcfs(
+              animationFinishHandler,
               processes,
               isAnimationRunning,
               animationSpeed,
@@ -61,6 +67,7 @@ const getIndexOfShortest = (processes: IProcess[]) => {
 };
 
 export const animatedSjf = (
+  animationFinishHandler: () => any,
   processes: IProcess[],
   isAnimationRunning: boolean,
   animationSpeed: number,
@@ -77,7 +84,7 @@ export const animatedSjf = (
       // const currentProcess = getShortestProcess(processes);
 
       if (currentProcess === null) {
-        isAnimationRunning = false;
+        animationFinishHandler();
       }
 
       if (isAnimationRunning) {
@@ -90,6 +97,7 @@ export const animatedSjf = (
           }
           requestAnimationFrame(() =>
             animatedSjf(
+              animationFinishHandler,
               processes,
               isAnimationRunning,
               animationSpeed,
@@ -99,6 +107,7 @@ export const animatedSjf = (
         } else {
           requestAnimationFrame(() =>
             animatedSjf(
+              animationFinishHandler,
               processes,
               isAnimationRunning,
               animationSpeed,
@@ -114,12 +123,14 @@ export const animatedSjf = (
 };
 
 export const animatedPsjf = (
+  animationFinishHandler: () => any,
   processes: IProcess[],
   isAnimationRunning: boolean,
   animationSpeed: number,
   i = getIndexOfShortest(processes),
   skipNextTimeout = false
 ) => {
+  console.log(isAnimationRunning);
   setTimeout(
     () => {
       const { length } = processes;
@@ -127,7 +138,7 @@ export const animatedPsjf = (
       const currentProcess = getShortestProcess(processes);
 
       if (currentProcess === null) {
-        isAnimationRunning = false;
+        animationFinishHandler();
       }
 
       if (isAnimationRunning) {
@@ -140,6 +151,7 @@ export const animatedPsjf = (
           }
           requestAnimationFrame(() =>
             animatedPsjf(
+              animationFinishHandler,
               processes,
               isAnimationRunning,
               animationSpeed,
@@ -149,6 +161,7 @@ export const animatedPsjf = (
         } else {
           requestAnimationFrame(() =>
             animatedPsjf(
+              animationFinishHandler,
               processes,
               isAnimationRunning,
               animationSpeed,
@@ -164,6 +177,7 @@ export const animatedPsjf = (
 };
 
 export const animatedRot = (
+  animationFinishHandler: () => any,
   processes: IProcess[],
   isAnimationRunning: boolean,
   animationSpeed: number,
@@ -180,11 +194,18 @@ export const animatedRot = (
         if (currentProcess.timeLeft >= 1) {
           processes[i % length].timeLeft += -1;
           requestAnimationFrame(() =>
-            animatedRot(processes, isAnimationRunning, animationSpeed, i + 1)
+            animatedRot(
+              animationFinishHandler,
+              processes,
+              isAnimationRunning,
+              animationSpeed,
+              i + 1
+            )
           );
         } else {
           requestAnimationFrame(() =>
             animatedRot(
+              animationFinishHandler,
               processes,
               isAnimationRunning,
               animationSpeed,

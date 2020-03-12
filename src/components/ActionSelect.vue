@@ -53,14 +53,6 @@
     <button class="randomize" @click="onGenerateRandomButton">
       Randomize processes
     </button>
-    <hr />
-    <label>Generate shape</label>
-    <button class="generate" disabled>
-      Generate pyramid
-    </button>
-    <button class="generate" disabled>
-      Generate triangle
-    </button>
   </div>
 </template>
 

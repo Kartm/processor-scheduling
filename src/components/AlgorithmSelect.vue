@@ -8,22 +8,31 @@
     <label for="psjf">preemptive SJF</label><br />
     <input type="radio" id="rot" name="algorithm" value="3" />
     <label for="other">ROT</label><br />
-    <button type="submit">Run</button>
-    <div><button disabled>Pause</button> <button disabled>Stop</button></div>
+    <button :disabled="isAnimationRunning" type="submit">Run</button>
+    <div>
+      <button :disabled="!isAnimationRunning" type="button" @click="onReset">
+        Reset
+      </button>
+    </div>
   </form>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import { Algorithm } from "../store/models.interface";
 
 @Component
 export default class AlgorithmSelect extends Vue {
+  @Prop({ required: true, type: Boolean }) isAnimationRunning!: boolean;
   public onRunAlgorithm(e: Event) {
     const { value } = (e.target as any).elements.algorithm;
     if (value.length > 0) {
       this.$emit("onRunAlgorithm", value as Algorithm);
     }
+  }
+
+  public onReset() {
+    this.$emit("onReset");
   }
 }
 </script>

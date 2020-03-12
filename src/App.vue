@@ -15,7 +15,11 @@
       />
     </InfoBox>
     <InfoBox title="Algorithms">
-      <AlgorithmSelect @onRunAlgorithm="onSelectAlgorithm" />
+      <AlgorithmSelect
+        :isAnimationRunning="isAnimationRunning"
+        @onRunAlgorithm="onSelectAlgorithm"
+        @onReset="onReset"
+      />
     </InfoBox>
     <InfoBox title="Statistics">
       <div class="statistics">
@@ -53,11 +57,13 @@ import ActionSelect from "./components/ActionSelect.vue";
   }
 })
 export default class App extends Vue {
+  public initialProcesses: IProcess[] = [];
+
   public processes: IProcess[] = [];
   public selectedAlgorithm: Algorithm | null = null;
 
   public numberOfProcesses = 10;
-  public animationSpeed = 4;
+  public animationSpeed = 10;
   public isAnimationRunning = false;
 
   private mounted() {
@@ -83,7 +89,8 @@ export default class App extends Vue {
     for (let i = 0; i < this.numberOfProcesses; i++) {
       generatedProcesses.push(generateRandomProcess());
     }
-    this.processes = generatedProcesses;
+    this.initialProcesses = [...generatedProcesses];
+    this.processes = [...generatedProcesses];
   }
 
   public onSelectAlgorithm(alg: Algorithm) {
@@ -91,11 +98,21 @@ export default class App extends Vue {
     this.executeSelectedAlgorithm();
   }
 
+  public onReset() {
+    this.processes = [...this.initialProcesses];
+    this.animationFinishHandler();
+  }
+
+  private animationFinishHandler() {
+    this.isAnimationRunning = false;
+  }
+
   public executeSelectedAlgorithm() {
     this.isAnimationRunning = true;
     switch (+(this.selectedAlgorithm as Algorithm)) {
       case Algorithm.fcfs: {
         animatedFcfs(
+          this.animationFinishHandler,
           this.processes,
           this.isAnimationRunning,
           this.animationSpeed
@@ -104,6 +121,7 @@ export default class App extends Vue {
       }
       case Algorithm.sjf: {
         animatedSjf(
+          this.animationFinishHandler,
           this.processes,
           this.isAnimationRunning,
           this.animationSpeed
@@ -112,6 +130,7 @@ export default class App extends Vue {
       }
       case Algorithm.psjf: {
         animatedPsjf(
+          this.animationFinishHandler,
           this.processes,
           this.isAnimationRunning,
           this.animationSpeed
@@ -120,6 +139,7 @@ export default class App extends Vue {
       }
       case Algorithm.rot: {
         animatedRot(
+          this.animationFinishHandler,
           this.processes,
           this.isAnimationRunning,
           this.animationSpeed
