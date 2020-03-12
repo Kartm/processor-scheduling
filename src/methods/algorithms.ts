@@ -1,53 +1,46 @@
 import { IProcess } from "@/store/models.interface";
 
-export interface IAnimationInfo {}
+export interface IAnimationInfo {
+  animationFinishHandler: () => any;
+  processes: IProcess[];
+  animationSpeed: number;
+}
+
+const isEveryProcessFinished = (processes: IProcess[]) => {
+  return processes.every(process => {
+    return process.timeLeft === 0;
+  });
+};
 
 export const animatedFcfs = (
-  animationFinishHandler: () => any,
-  processes: IProcess[],
-  isAnimationRunning: boolean,
-  animationSpeed: number,
+  info: IAnimationInfo,
   i = 0,
   skipNextTimeout = false
 ) => {
+  if (isEveryProcessFinished(info.processes)) {
+    info.animationFinishHandler();
+    return;
+  }
+
   setTimeout(
     () => {
-      const { length } = processes;
+      const { length } = info.processes;
 
-      const currentProcess = processes[i % length];
+      const currentProcess = info.processes[i % length];
 
-      if (isAnimationRunning) {
-        if (currentProcess.timeLeft >= 1) {
-          processes[i % length].timeLeft += -1;
+      if (currentProcess.timeLeft >= 1) {
+        info.processes[i % length].timeLeft += -1;
 
-          let nextIndex = i;
-          if (currentProcess.timeLeft === 0) {
-            nextIndex++;
-          }
-          requestAnimationFrame(() =>
-            animatedFcfs(
-              animationFinishHandler,
-              processes,
-              isAnimationRunning,
-              animationSpeed,
-              nextIndex % length
-            )
-          );
-        } else {
-          requestAnimationFrame(() =>
-            animatedFcfs(
-              animationFinishHandler,
-              processes,
-              isAnimationRunning,
-              animationSpeed,
-              i + 1,
-              true
-            )
-          );
+        let nextIndex = i;
+        if (currentProcess.timeLeft === 0) {
+          nextIndex++;
         }
+        requestAnimationFrame(() => animatedFcfs(info, nextIndex % length));
+      } else {
+        requestAnimationFrame(() => animatedFcfs(info, i + 1, true));
       }
     },
-    skipNextTimeout ? 0 : 1000 * (1 / animationSpeed)
+    skipNextTimeout ? 0 : 1000 * (1 / info.animationSpeed)
   );
 };
 
@@ -67,155 +60,95 @@ const getIndexOfShortest = (processes: IProcess[]) => {
 };
 
 export const animatedSjf = (
-  animationFinishHandler: () => any,
-  processes: IProcess[],
-  isAnimationRunning: boolean,
-  animationSpeed: number,
-  i = getIndexOfShortest(processes),
+  info: IAnimationInfo,
+  i = getIndexOfShortest(info.processes),
   skipNextTimeout = false
 ) => {
   setTimeout(
     () => {
-      const { length } = processes;
+      const { length } = info.processes;
 
       // don't stop until finished
+      const currentProcess = info.processes[i % length];
 
-      const currentProcess = processes[i % length];
-      // const currentProcess = getShortestProcess(processes);
-
-      if (currentProcess === null) {
-        animationFinishHandler();
+      if (currentProcess === null || currentProcess === undefined) {
+        info.animationFinishHandler();
+        return;
       }
 
-      if (isAnimationRunning) {
-        if (currentProcess.timeLeft >= 1) {
-          currentProcess.timeLeft += -1;
+      if (currentProcess.timeLeft >= 1) {
+        currentProcess.timeLeft += -1;
 
-          let nextIndex = i;
-          if (currentProcess.timeLeft === 0) {
-            nextIndex = processes.indexOf(getShortestProcess(processes));
-          }
-          requestAnimationFrame(() =>
-            animatedSjf(
-              animationFinishHandler,
-              processes,
-              isAnimationRunning,
-              animationSpeed,
-              nextIndex % length
-            )
-          );
-        } else {
-          requestAnimationFrame(() =>
-            animatedSjf(
-              animationFinishHandler,
-              processes,
-              isAnimationRunning,
-              animationSpeed,
-              i + 1,
-              true
-            )
+        let nextIndex = i;
+        if (currentProcess.timeLeft === 0) {
+          nextIndex = info.processes.indexOf(
+            getShortestProcess(info.processes)
           );
         }
+        requestAnimationFrame(() => animatedSjf(info, nextIndex % length));
+      } else {
+        requestAnimationFrame(() => animatedSjf(info, i + 1, true));
       }
     },
-    skipNextTimeout ? 0 : 1000 * (1 / animationSpeed)
+    skipNextTimeout ? 0 : 1000 * (1 / info.animationSpeed)
   );
 };
 
 export const animatedPsjf = (
-  animationFinishHandler: () => any,
-  processes: IProcess[],
-  isAnimationRunning: boolean,
-  animationSpeed: number,
-  i = getIndexOfShortest(processes),
+  info: IAnimationInfo,
+  i = getIndexOfShortest(info.processes),
   skipNextTimeout = false
 ) => {
-  console.log(isAnimationRunning);
   setTimeout(
     () => {
-      const { length } = processes;
+      const { length } = info.processes;
 
-      const currentProcess = getShortestProcess(processes);
+      const currentProcess = getShortestProcess(info.processes);
 
       if (currentProcess === null) {
-        animationFinishHandler();
+        info.animationFinishHandler();
+        return;
       }
 
-      if (isAnimationRunning) {
-        if (currentProcess.timeLeft >= 1) {
-          currentProcess.timeLeft += -1;
+      if (currentProcess.timeLeft >= 1) {
+        currentProcess.timeLeft += -1;
 
-          let nextIndex = i;
-          if (currentProcess.timeLeft === 0) {
-            nextIndex++;
-          }
-          requestAnimationFrame(() =>
-            animatedPsjf(
-              animationFinishHandler,
-              processes,
-              isAnimationRunning,
-              animationSpeed,
-              nextIndex % length
-            )
-          );
-        } else {
-          requestAnimationFrame(() =>
-            animatedPsjf(
-              animationFinishHandler,
-              processes,
-              isAnimationRunning,
-              animationSpeed,
-              i + 1,
-              true
-            )
-          );
+        let nextIndex = i;
+        if (currentProcess.timeLeft === 0) {
+          nextIndex++;
         }
+        requestAnimationFrame(() => animatedPsjf(info, nextIndex % length));
+      } else {
+        requestAnimationFrame(() => animatedPsjf(info, i + 1, true));
       }
     },
-    skipNextTimeout ? 0 : 1000 * (1 / animationSpeed)
+    skipNextTimeout ? 0 : 1000 * (1 / info.animationSpeed)
   );
 };
 
 export const animatedRot = (
-  animationFinishHandler: () => any,
-  processes: IProcess[],
-  isAnimationRunning: boolean,
-  animationSpeed: number,
+  info: IAnimationInfo,
   i = 0,
   skipNextTimeout = false
 ) => {
+  if (isEveryProcessFinished(info.processes)) {
+    info.animationFinishHandler();
+    return;
+  }
+
   setTimeout(
     () => {
-      const { length } = processes;
+      const { length } = info.processes;
 
-      const currentProcess = processes[i % length];
+      const currentProcess = info.processes[i % length];
 
-      if (isAnimationRunning) {
-        if (currentProcess.timeLeft >= 1) {
-          processes[i % length].timeLeft += -1;
-          requestAnimationFrame(() =>
-            animatedRot(
-              animationFinishHandler,
-              processes,
-              isAnimationRunning,
-              animationSpeed,
-              i + 1
-            )
-          );
-        } else {
-          requestAnimationFrame(() =>
-            animatedRot(
-              animationFinishHandler,
-              processes,
-              isAnimationRunning,
-              animationSpeed,
-              i + 1,
-              true
-            )
-          );
-        }
+      if (currentProcess.timeLeft >= 1) {
+        info.processes[i % length].timeLeft += -1;
+        requestAnimationFrame(() => animatedRot(info, i + 1));
+      } else {
+        requestAnimationFrame(() => animatedRot(info, i + 1, true));
       }
     },
-    skipNextTimeout ? 0 : 1000 * (1 / animationSpeed)
+    skipNextTimeout ? 0 : 1000 * (1 / info.animationSpeed)
   );
 };

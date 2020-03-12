@@ -11,6 +11,7 @@ module.exports = {
     "no-extra-semi": "off",
     semi: [2, "always"],
     "space-before-function-paren": ["error", "never"],
-    "@typescript-eslint/interface-name-prefix": ["off"]
+    "@typescript-eslint/interface-name-prefix": ["off"],
+    "@typescript-eslint/ban-types": ["warn"]
   }
 };

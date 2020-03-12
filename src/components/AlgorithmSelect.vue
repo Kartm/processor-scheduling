@@ -1,16 +1,45 @@
 <template>
   <form class="algorithms" @submit.prevent="onRunAlgorithm">
-    <input type="radio" id="fcfs" name="algorithm" value="0" checked />
+    <input
+      :disabled="isAnimationRunning"
+      @click="onAlgorithmSelect(0)"
+      type="radio"
+      id="fcfs"
+      name="algorithm"
+      value="0"
+      checked
+    />
     <label for="fcfs">FCFS</label><br />
-    <input type="radio" id="sjf" name="algorithm" value="1" />
+    <input
+      :disabled="isAnimationRunning"
+      @click="onAlgorithmSelect(1)"
+      type="radio"
+      id="sjf"
+      name="algorithm"
+      value="1"
+    />
     <label for="sjf">SJF</label><br />
-    <input type="radio" id="psjf" name="algorithm" value="2" />
+    <input
+      :disabled="isAnimationRunning"
+      @click="onAlgorithmSelect(2)"
+      type="radio"
+      id="psjf"
+      name="algorithm"
+      value="2"
+    />
     <label for="psjf">preemptive SJF</label><br />
-    <input type="radio" id="rot" name="algorithm" value="3" />
+    <input
+      :disabled="isAnimationRunning"
+      @click="onAlgorithmSelect(3)"
+      type="radio"
+      id="rot"
+      name="algorithm"
+      value="3"
+    />
     <label for="other">ROT</label><br />
     <button :disabled="isAnimationRunning" type="submit">Run</button>
     <div>
-      <button :disabled="!isAnimationRunning" type="button" @click="onReset">
+      <button :disabled="isAnimationRunning" type="button" @click="onReset">
         Reset
       </button>
     </div>
@@ -33,6 +62,10 @@ export default class AlgorithmSelect extends Vue {
 
   public onReset() {
     this.$emit("onReset");
+  }
+
+  public onAlgorithmSelect(id: number) {
+    this.$emit("onAlgorithmSelect", id);
   }
 }
 </script>

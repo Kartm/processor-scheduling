@@ -3,6 +3,7 @@
     <label>Animation speed</label>
     <span class="option">
       <button
+        :disabled="isAnimationRunning"
         @click="
           () => {
             onChangeAnimationSpeed(-1);
@@ -14,6 +15,7 @@
       </button>
       <span class="process-count-number">{{ animationSpeed }}</span>
       <button
+        :disabled="isAnimationRunning"
         @click="
           () => {
             onChangeAnimationSpeed(1);
@@ -28,6 +30,7 @@
     <label>Process count</label>
     <span class="option">
       <button
+        :disabled="isAnimationRunning"
         @click="
           () => {
             onChangeProcessNumbers(-1);
@@ -39,6 +42,7 @@
       </button>
       <span class="process-count-number">{{ numberOfProcesses }}</span>
       <button
+        :disabled="isAnimationRunning"
         @click="
           () => {
             onChangeProcessNumbers(1);
@@ -50,7 +54,11 @@
       </button>
     </span>
     <hr />
-    <button class="randomize" @click="onGenerateRandomButton">
+    <button
+      :disabled="isAnimationRunning"
+      class="randomize"
+      @click="onGenerateRandomButton"
+    >
       Randomize processes
     </button>
   </div>
@@ -71,6 +79,7 @@ const limits = {
 export default class ActionSelect extends Vue {
   @Prop({ type: Number, required: true }) numberOfProcesses!: number;
   @Prop({ type: Number, required: true }) animationSpeed!: number;
+  @Prop({ required: true, type: Boolean }) isAnimationRunning!: boolean;
 
   private mounted() {
     this.onGenerateRandomButton();

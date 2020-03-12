@@ -9,6 +9,7 @@
       <ActionSelect
         :numberOfProcesses="numberOfProcesses"
         :animationSpeed="animationSpeed"
+        :isAnimationRunning="isAnimationRunning"
         @onChangeProcessNumbers="onChangeProcessNumbers"
         @onChangeAnimationSpeed="onChangeAnimationSpeed"
         @onGenerateRandomButton="onGenerateRandomButton"
@@ -17,7 +18,8 @@
     <InfoBox title="Algorithms">
       <AlgorithmSelect
         :isAnimationRunning="isAnimationRunning"
-        @onRunAlgorithm="onSelectAlgorithm"
+        @onRunAlgorithm="onRunAlgorithm"
+        @onAlgorithmSelect="onAlgorithmSelect"
         @onReset="onReset"
       />
     </InfoBox>
@@ -38,6 +40,7 @@ import {
   generateRandomProcess
 } from "./methods/process";
 import {
+  IAnimationInfo,
   animatedFcfs,
   animatedSjf,
   animatedPsjf,
@@ -78,6 +81,7 @@ export default class App extends Vue {
       this.numberOfProcesses += change;
       this.processes.pop();
     }
+    this.initialProcesses = this.processes.map(process => ({ ...process }));
   }
 
   public onChangeAnimationSpeed(change: number) {
@@ -89,17 +93,20 @@ export default class App extends Vue {
     for (let i = 0; i < this.numberOfProcesses; i++) {
       generatedProcesses.push(generateRandomProcess());
     }
-    this.initialProcesses = [...generatedProcesses];
+    this.initialProcesses = generatedProcesses.map(process => ({ ...process }));
     this.processes = [...generatedProcesses];
   }
 
-  public onSelectAlgorithm(alg: Algorithm) {
-    this.selectedAlgorithm = alg;
+  public onRunAlgorithm(alg: Algorithm) {
     this.executeSelectedAlgorithm();
   }
 
+  public onAlgorithmSelect(id: number) {
+    this.selectedAlgorithm = id;
+  }
+
   public onReset() {
-    this.processes = [...this.initialProcesses];
+    this.processes = this.initialProcesses.map(process => ({ ...process }));
     this.animationFinishHandler();
   }
 
@@ -109,44 +116,29 @@ export default class App extends Vue {
 
   public executeSelectedAlgorithm() {
     this.isAnimationRunning = true;
+
+    const animationInfo = {
+      animationFinishHandler: this.animationFinishHandler,
+      processes: this.processes,
+      animationSpeed: this.animationSpeed
+    } as IAnimationInfo;
     switch (+(this.selectedAlgorithm as Algorithm)) {
       case Algorithm.fcfs: {
-        animatedFcfs(
-          this.animationFinishHandler,
-          this.processes,
-          this.isAnimationRunning,
-          this.animationSpeed
-        );
+        animatedFcfs(animationInfo);
         break;
       }
       case Algorithm.sjf: {
-        animatedSjf(
-          this.animationFinishHandler,
-          this.processes,
-          this.isAnimationRunning,
-          this.animationSpeed
-        );
+        animatedSjf(animationInfo);
         break;
       }
       case Algorithm.psjf: {
-        animatedPsjf(
-          this.animationFinishHandler,
-          this.processes,
-          this.isAnimationRunning,
-          this.animationSpeed
-        );
+        animatedPsjf(animationInfo);
         break;
       }
       case Algorithm.rot: {
-        animatedRot(
-          this.animationFinishHandler,
-          this.processes,
-          this.isAnimationRunning,
-          this.animationSpeed
-        );
+        animatedRot(animationInfo);
         break;
       }
-
       default: {
         break;
       }
