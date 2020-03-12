@@ -30,7 +30,6 @@
     <label>Process count</label>
     <span class="option">
       <button
-        :disabled="isAnimationRunning"
         @click="
           () => {
             onChangeProcessNumbers(-1);
@@ -42,7 +41,6 @@
       </button>
       <span class="process-count-number">{{ numberOfProcesses }}</span>
       <button
-        :disabled="isAnimationRunning"
         @click="
           () => {
             onChangeProcessNumbers(1);

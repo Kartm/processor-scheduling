@@ -23,10 +23,12 @@
         @onReset="onReset"
       />
     </InfoBox>
-    <InfoBox title="Statistics">
+    <InfoBox title="Precalculated statistics">
       <div class="statistics">
-        <span>Precalculated avg waiting time</span>
+        <span>Average waiting time</span>
         <span>{{ averageWaitingTime }}</span>
+        <span v-if="isRotSelected">Time window</span>
+        <span v-if="isRotSelected">{{ timeWindow }}</span>
       </div>
     </InfoBox>
   </div>
@@ -35,21 +37,23 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { IProcess, Algorithm } from "./store/models.interface";
-import {
-  averageWaitingTimeFcfs,
-  generateRandomProcess
-} from "./methods/process";
+import { generateRandomProcess } from "./methods/process";
 import {
   IAnimationInfo,
   animatedFcfs,
   animatedSjf,
   animatedPsjf,
-  animatedRot
+  animatedRot,
+  averageWaitingTimeFcfs,
+  averageWaitingTimeSjf,
+  averageWaitingTimePsjf,
+  averageWaitingTimeRot
 } from "./methods/algorithms";
 import InfoBox from "./components/InfoBox.vue";
 import Processes from "./components/Processes.vue";
 import AlgorithmSelect from "./components/AlgorithmSelect.vue";
 import ActionSelect from "./components/ActionSelect.vue";
+import store from "./store/index";
 
 @Component({
   components: {
@@ -68,6 +72,8 @@ export default class App extends Vue {
   public numberOfProcesses = 10;
   public animationSpeed = 10;
   public isAnimationRunning = false;
+
+  public timeWindow = 0;
 
   private mounted() {
     this.onGenerateRandomButton();
@@ -114,6 +120,10 @@ export default class App extends Vue {
     this.isAnimationRunning = false;
   }
 
+  public get isRotSelected() {
+    return this.selectedAlgorithm === Algorithm.rot;
+  }
+
   public executeSelectedAlgorithm() {
     this.isAnimationRunning = true;
 
@@ -149,6 +159,15 @@ export default class App extends Vue {
     switch (+(this.selectedAlgorithm as Algorithm)) {
       case Algorithm.fcfs: {
         return averageWaitingTimeFcfs(this.processes);
+      }
+      case Algorithm.sjf: {
+        return averageWaitingTimeSjf(this.processes);
+      }
+      case Algorithm.psjf: {
+        return averageWaitingTimePsjf(this.processes);
+      }
+      case Algorithm.rot: {
+        return averageWaitingTimeRot(this.processes);
       }
       default: {
         return "?";

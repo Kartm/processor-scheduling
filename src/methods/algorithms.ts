@@ -152,3 +152,54 @@ export const animatedRot = (
     skipNextTimeout ? 0 : 1000 * (1 / info.animationSpeed)
   );
 };
+
+const roundTwoDecimals = (x: number) => {
+  return Math.round(x * 100) / 100;
+};
+
+export const averageWaitingTimeFcfs = (processes: IProcess[]) => {
+  let accelerator = 0;
+
+  for (let i = 0; i < processes.length - 1; i++) {
+    accelerator += accelerator + processes[i].neededTime;
+  }
+
+  const avg = accelerator / processes.length;
+  return roundTwoDecimals(avg);
+};
+
+export const averageWaitingTimeSjf = (processes: IProcess[]) => {
+  const sortedProcesses = [...processes].sort((a, b) => {
+    return a.neededTime - b.neededTime;
+  });
+  let accelerator = 0;
+
+  for (let i = 0; i < sortedProcesses.length - 1; i++) {
+    accelerator += accelerator + sortedProcesses[i].neededTime;
+  }
+
+  const avg = accelerator / sortedProcesses.length;
+  return roundTwoDecimals(avg);
+};
+
+export const averageWaitingTimePsjf = (processes: IProcess[]) => {
+  return averageWaitingTimeSjf(processes);
+};
+
+export const averageWaitingTimeRot = (processes: IProcess[]) => {
+  const timeWindow = 3;
+
+  const clonedProcesses = processes.map(process => ({ ...process }));
+  // while (!isEveryProcessFinished(clonedProcesses)) {
+  //   // todo preemprive allow addition
+  // }
+
+  let accelerator = 0;
+
+  for (let i = 0; i < processes.length - 1; i++) {
+    accelerator += accelerator + processes[i].neededTime;
+  }
+
+  const avg = accelerator / processes.length;
+  return roundTwoDecimals(avg);
+};
