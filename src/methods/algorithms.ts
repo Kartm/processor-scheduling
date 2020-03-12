@@ -13,26 +13,28 @@ export const animatedFcfs = (i = 0, skipNextTimeout = false) => {
     return;
   }
 
-  setTimeout(
-    () => {
-      const { length } = store.state.processes;
+  if (store.state.isAnimationRunning) {
+    setTimeout(
+      () => {
+        const { length } = store.state.processes;
 
-      const currentProcess = store.state.processes[i % length];
+        const currentProcess = store.state.processes[i % length];
 
-      if (currentProcess.timeLeft >= 1) {
-        store.state.processes[i % length].timeLeft += -1;
+        if (currentProcess.timeLeft >= 1) {
+          store.state.processes[i % length].timeLeft += -1;
 
-        let nextIndex = i;
-        if (currentProcess.timeLeft === 0) {
-          nextIndex++;
+          let nextIndex = i;
+          if (currentProcess.timeLeft === 0) {
+            nextIndex++;
+          }
+          requestAnimationFrame(() => animatedFcfs(nextIndex % length));
+        } else {
+          requestAnimationFrame(() => animatedFcfs(i + 1, true));
         }
-        requestAnimationFrame(() => animatedFcfs(nextIndex % length));
-      } else {
-        requestAnimationFrame(() => animatedFcfs(i + 1, true));
-      }
-    },
-    skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
-  );
+      },
+      skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
+    );
+  }
 };
 
 const getShortestProcess = () => {
@@ -54,64 +56,70 @@ export const animatedSjf = (
   i = getIndexOfShortest(),
   skipNextTimeout = false
 ) => {
-  setTimeout(
-    () => {
-      const { length } = store.state.processes;
+  if (store.state.isAnimationRunning) {
+    setTimeout(
+      () => {
+        const { length } = store.state.processes;
 
-      // don't stop until finished
-      const currentProcess = store.state.processes[i % length];
+        // don't stop until finished
+        const currentProcess = store.state.processes[i % length];
 
-      if (currentProcess === null || currentProcess === undefined) {
-        store.commit("changeAnimationState", { change: false });
-        return;
-      }
-
-      if (currentProcess.timeLeft >= 1) {
-        currentProcess.timeLeft += -1;
-
-        let nextIndex = i;
-        if (currentProcess.timeLeft === 0) {
-          nextIndex = store.state.processes.indexOf(getShortestProcess());
+        if (currentProcess === null || currentProcess === undefined) {
+          store.commit("changeAnimationState", { change: false });
+          return;
         }
-        requestAnimationFrame(() => animatedSjf(nextIndex % length));
-      } else {
-        requestAnimationFrame(() => animatedSjf(i + 1, true));
-      }
-    },
-    skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
-  );
+
+        if (currentProcess.timeLeft >= 1) {
+          currentProcess.timeLeft += -1;
+
+          let nextIndex = i;
+          if (currentProcess.timeLeft === 0) {
+            nextIndex = store.state.processes.indexOf(getShortestProcess());
+          }
+          requestAnimationFrame(() => animatedSjf(nextIndex % length));
+        } else {
+          requestAnimationFrame(() => animatedSjf(i + 1, true));
+        }
+      },
+      skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
+    );
+  }
 };
 
 export const animatedPsjf = (
   i = getIndexOfShortest(),
   skipNextTimeout = false
 ) => {
-  setTimeout(
-    () => {
-      const { length } = store.state.processes;
+  if (store.state.isAnimationRunning) {
+    setTimeout(
+      () => {
+        const { length } = store.state.processes;
 
-      const currentProcess = getShortestProcess();
+        const currentProcess = getShortestProcess();
 
-      if (currentProcess === null) {
-        store.commit("changeAnimationState", { change: false });
-        return;
-      }
-
-      if (currentProcess.timeLeft >= 1) {
-        currentProcess.timeLeft += -1;
-
-        let nextIndex = i;
-        if (currentProcess.timeLeft === 0) {
-          nextIndex++;
+        if (currentProcess === null) {
+          store.commit("changeAnimationState", { change: false });
+          return;
         }
-        requestAnimationFrame(() => animatedPsjf(nextIndex % length));
-      } else {
-        requestAnimationFrame(() => animatedPsjf(i + 1, true));
-      }
-    },
-    skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
-  );
+
+        if (currentProcess.timeLeft >= 1) {
+          currentProcess.timeLeft += -1;
+
+          let nextIndex = i;
+          if (currentProcess.timeLeft === 0) {
+            nextIndex++;
+          }
+          requestAnimationFrame(() => animatedPsjf(nextIndex % length));
+        } else {
+          requestAnimationFrame(() => animatedPsjf(i + 1, true));
+        }
+      },
+      skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
+    );
+  }
 };
+
+let currentProcessStepCounter = 0;
 
 export const animatedRot = (i = 0, skipNextTimeout = false) => {
   if (isEveryProcessFinished()) {
@@ -119,21 +127,33 @@ export const animatedRot = (i = 0, skipNextTimeout = false) => {
     return;
   }
 
-  setTimeout(
-    () => {
-      const { length } = store.state.processes;
+  if (store.state.isAnimationRunning) {
+    setTimeout(
+      () => {
+        const { length } = store.state.processes;
 
-      const currentProcess = store.state.processes[i % length];
+        const currentProcess = store.state.processes[i % length];
 
-      if (currentProcess.timeLeft >= 1) {
-        store.state.processes[i % length].timeLeft += -1;
-        requestAnimationFrame(() => animatedRot(i + 1));
-      } else {
-        requestAnimationFrame(() => animatedRot(i + 1, true));
-      }
-    },
-    skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
-  );
+        if (currentProcess.timeLeft >= 1) {
+          store.state.processes[i % length].timeLeft += -1;
+          currentProcessStepCounter++;
+          if (
+            currentProcessStepCounter % store.state.timeQuantum === 0 &&
+            currentProcessStepCounter > 0
+          ) {
+            currentProcessStepCounter = 0;
+            requestAnimationFrame(() => animatedRot(i + 1));
+          } else {
+            requestAnimationFrame(() => animatedRot(i));
+          }
+        } else {
+          currentProcessStepCounter = 0;
+          requestAnimationFrame(() => animatedRot(i + 1, true));
+        }
+      },
+      skipNextTimeout ? 0 : 1000 * (1 / store.state.animationSpeed)
+    );
+  }
 };
 
 const roundTwoDecimals = (x: number) => {
@@ -173,8 +193,10 @@ export const averageWaitingTimePsjf = () => {
 };
 
 export const averageWaitingTimeRot = () => {
-  const { processes, timeQuantum } = store.state;
-  const clonedProcesses = processes.map(process => ({ ...process }));
+  const { initialProcesses, timeQuantum } = store.state;
+  const clonedProcesses = [...initialProcesses].map(process => ({
+    ...process
+  }));
 
   let time = 0;
 

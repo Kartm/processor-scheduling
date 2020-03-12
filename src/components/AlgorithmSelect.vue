@@ -35,7 +35,7 @@
     <label for="rot">ROT</label><br />
     <button :disabled="isAnimationRunning" type="submit">Run</button>
     <div>
-      <button :disabled="isAnimationRunning" type="button" @click="onReset">
+      <button type="button" @click="onReset">
         Reset
       </button>
     </div>
@@ -72,7 +72,7 @@ form.algorithms {
   text-align: left;
   input,
   label {
-    margin: 4px 0;
+    margin: 6px 0;
     cursor: pointer;
   }
 

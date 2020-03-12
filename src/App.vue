@@ -64,13 +64,13 @@ export default class App extends Vue {
     this.onGenerateRandomButton();
   }
 
+  public get state() {
+    return store.state;
+  }
+
   public onChangeProcessNumbers(change: number) {
     store.commit("incrementProcessCount", { amount: change });
     store.commit("updateInitialProcesses");
-  }
-
-  public get state() {
-    return store.state;
   }
 
   public onChangeAnimationSpeed(change: number) {
@@ -96,6 +96,11 @@ export default class App extends Vue {
   public onReset() {
     store.commit("restoreInitialProcesses");
     store.commit("changeAnimationState", { change: false });
+
+    // the animation is still running for one cycle, reset the processes again
+    setTimeout(() => {
+      store.commit("restoreInitialProcesses");
+    }, 1000 * (1 / store.state.animationSpeed));
   }
 
   public get isRotSelected() {
@@ -160,7 +165,7 @@ $verticalMargin: 60px;
     }
 
     & > span:nth-child(odd) {
-      padding: 10px 0;
+      margin: 6px 0;
     }
   }
 }

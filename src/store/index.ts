@@ -29,9 +29,9 @@ export default new Vuex.Store({
     initialProcesses: [] as IProcess[],
     processes: [] as IProcess[],
     selectedAlgorithm: 0 as Algorithm | null,
+    isAnimationRunning: false,
     numberOfProcesses: defaultValues.numberOfProcesses,
     animationSpeed: defaultValues.animationSpeed,
-    isAnimationRunning: false,
     timeQuantum: defaultValues.timeQuantum
   },
   mutations: {
@@ -42,6 +42,7 @@ export default new Vuex.Store({
         newNumberOfProcesses <= limits.maxProcessNumber
       ) {
         state.numberOfProcesses = newNumberOfProcesses;
+
         if (payload.amount > 0) {
           state.processes.push(generateRandomProcess());
         } else {
@@ -55,7 +56,7 @@ export default new Vuex.Store({
         newAnimationSpeed >= limits.minAnimationSpeed &&
         newAnimationSpeed <= limits.maxAnimationSpeed
       ) {
-        state.numberOfProcesses = newAnimationSpeed;
+        state.animationSpeed = newAnimationSpeed;
       }
     },
     incrementTimeQuantum(state, payload) {
@@ -81,7 +82,7 @@ export default new Vuex.Store({
       state.initialProcesses = state.processes.map(process => ({ ...process }));
     },
     restoreInitialProcesses(state) {
-      state.processes = state.initialProcesses.map(process => ({
+      state.processes = [...state.initialProcesses].map(process => ({
         ...process,
         timeLeft: process.neededTime
       }));
