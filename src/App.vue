@@ -33,7 +33,12 @@ import {
   averageWaitingTimeFcfs,
   generateRandomProcess
 } from "./methods/process";
-import { animatedFcfs, animatedRot } from "./methods/algorithms";
+import {
+  animatedFcfs,
+  animatedSjf,
+  animatedPsjf,
+  animatedRot
+} from "./methods/algorithms";
 import InfoBox from "./components/InfoBox.vue";
 import Processes from "./components/Processes.vue";
 import AlgorithmSelect from "./components/AlgorithmSelect.vue";
@@ -89,9 +94,24 @@ export default class App extends Vue {
   public executeSelectedAlgorithm() {
     this.isAnimationRunning = true;
     switch (+(this.selectedAlgorithm as Algorithm)) {
-      // first come first serve
       case Algorithm.fcfs: {
         animatedFcfs(
+          this.processes,
+          this.isAnimationRunning,
+          this.animationSpeed
+        );
+        break;
+      }
+      case Algorithm.sjf: {
+        animatedSjf(
+          this.processes,
+          this.isAnimationRunning,
+          this.animationSpeed
+        );
+        break;
+      }
+      case Algorithm.psjf: {
+        animatedPsjf(
           this.processes,
           this.isAnimationRunning,
           this.animationSpeed
