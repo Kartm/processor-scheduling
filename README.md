@@ -1,24 +1,13 @@
-# processor_scheduling
+# Solutions for Operating Systems labs
 
-## Project setup
-```
-yarn install
-```
+## Includes interactive apps for:
+- Processor scheduling algorithms
+- Disk scheduling algorithms
+- Page replacement algorithms
+- Frame allocation algorithms for multiple processes
+- Processor scheduling in distributed systems (processor assignment for a process)
 
-### Compiles and hot-reloads for development
+### Running for local development
 ```
 yarn serve
 ```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
