@@ -1,6 +1,6 @@
 # Solutions for Operating Systems labs
 
-## Includes interactive apps for:
+Includes interactive apps for:
 - Processor scheduling algorithms
 - Disk scheduling algorithms
 - Page replacement algorithms
