@@ -1,5 +1,4 @@
 # Solutions for Operating Systems labs
-Live preview: https://kartm.github.io/operating-systems-labs/
 
 Includes interactive apps for:
 - Processor scheduling algorithms
@@ -7,6 +6,9 @@ Includes interactive apps for:
 - Page replacement algorithms
 - Frame allocation algorithms for multiple processes
 - Processor scheduling in distributed systems (processor assignment for a process)
+
+### Live preview
+https://kartm.github.io/operating-systems-labs/
 
 ### Running for local development
 ```
