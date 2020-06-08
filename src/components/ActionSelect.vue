@@ -9,9 +9,7 @@
           }
         "
         class="modify decrease"
-      >
-        -1
-      </button>
+      >-1</button>
       <span class="process-count-number">{{ animationSpeed }}</span>
       <button
         @click="
@@ -20,9 +18,7 @@
           }
         "
         class="modify increase"
-      >
-        +1
-      </button>
+      >+1</button>
     </span>
     <hr />
     <label>Process count</label>
@@ -34,9 +30,7 @@
           }
         "
         class="modify decrease"
-      >
-        -1
-      </button>
+      >-1</button>
       <span class="process-count-number">{{ numberOfProcesses }}</span>
       <button
         @click="
@@ -45,18 +39,11 @@
           }
         "
         class="modify increase"
-      >
-        +1
-      </button>
+      >+1</button>
     </span>
     <hr />
-    <label :style="[isRotSelected ? {} : { visibility: 'hidden' }]"
-      >Time window</label
-    >
-    <span
-      class="option"
-      :style="[isRotSelected ? {} : { visibility: 'hidden' }]"
-    >
+    <label :style="[isRotSelected ? {} : { visibility: 'hidden' }]">Time window</label>
+    <span class="option" :style="[isRotSelected ? {} : { visibility: 'hidden' }]">
       <button
         @click="
           () => {
@@ -64,9 +51,7 @@
           }
         "
         class="modify decrease"
-      >
-        -1
-      </button>
+      >-1</button>
       <span class="process-count-number">{{ timeQuantum }}</span>
       <button
         @click="
@@ -75,18 +60,14 @@
           }
         "
         class="modify increase"
-      >
-        +1
-      </button>
+      >+1</button>
     </span>
     <hr />
     <button
       :disabled="isAnimationRunning"
       class="randomize"
       @click="onGenerateRandomButton"
-    >
-      Randomize processes
-    </button>
+    >Randomize processes</button>
   </div>
 </template>
 
