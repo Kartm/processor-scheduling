@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { IProcess } from "../store/models.interface";
+import { IProcess } from "../store/processor-scheduling/models.interface";
 import Process from "./Process.vue";
 
 @Component({

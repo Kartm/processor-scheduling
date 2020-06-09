@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { generateRandomProcess } from "@/methods/process";
+import { generateRandomProcess } from "@/methods/processor-scheduling/process";
 import { IProcess, Algorithm } from "./models.interface";
 
 Vue.use(Vuex);

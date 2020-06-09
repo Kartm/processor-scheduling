@@ -73,7 +73,10 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { IProcess, Algorithm } from "../store/models.interface";
+import {
+  IProcess,
+  Algorithm
+} from "../store/processor-scheduling/models.interface";
 
 @Component
 export default class ActionSelect extends Vue {

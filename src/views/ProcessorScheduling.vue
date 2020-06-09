@@ -43,18 +43,21 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { IProcess, Algorithm } from "../store/models.interface";
-import { generateRandomProcess } from "../methods/process";
+import {
+  IProcess,
+  Algorithm
+} from "../store/processor-scheduling/models.interface";
+import { generateRandomProcess } from "../methods/processor-scheduling/process";
 import {
   executeSelectedAlgorithm,
   getAvgWaitingTime
-} from "../methods/algorithms";
+} from "../methods/processor-scheduling/algorithms";
 import InfoBox from "../components/InfoBox.vue";
 import Processes from "../components/Processes.vue";
 import AlgorithmSelect from "../components/AlgorithmSelect.vue";
 import ActionSelect from "../components/ActionSelect.vue";
 import AxisDescription from "../components/AxisDescription.vue";
-import store from "../store/index";
+import store from "../store/processor-scheduling/index";
 
 @Component({
   components: {

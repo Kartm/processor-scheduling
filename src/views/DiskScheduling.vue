@@ -34,8 +34,6 @@
       <div class="statistics">
         <span>Average waiting time</span>
         <span>{{ avgWaitingTime }}</span>
-        <span v-if="isRotSelected">Time window</span>
-        <span v-if="isRotSelected">{{ state.timeQuantum }}</span>
       </div>
     </InfoBox>
   </div>
@@ -43,18 +41,18 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { IProcess, Algorithm } from "../store/models.interface";
-import { generateRandomProcess } from "../methods/process";
+import { ITask, Algorithm } from "../store/disk-scheduling/models.interface";
+import { generateRandomTask } from "../methods/disk-scheduling/task";
 import {
   executeSelectedAlgorithm,
   getAvgWaitingTime
-} from "../methods/algorithms";
+} from "../methods/disk-scheduling/algorithms";
 import InfoBox from "../components/InfoBox.vue";
 import Processes from "../components/Processes.vue";
 import AlgorithmSelect from "../components/AlgorithmSelect.vue";
 import ActionSelect from "../components/ActionSelect.vue";
 import AxisDescription from "../components/AxisDescription.vue";
-import store from "../store/index";
+import store from "../store/disk-scheduling/index";
 
 @Component({
   components: {
@@ -107,10 +105,6 @@ export default class DiskScheduling extends Vue {
     setTimeout(() => {
       store.commit("restoreInitialProcesses");
     }, 1000 * (1 / store.state.animationSpeed));
-  }
-
-  public get isRotSelected() {
-    return store.state.selectedAlgorithm === Algorithm.rot;
   }
 
   public executeSelectedAlgorithm() {

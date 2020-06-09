@@ -1,16 +1,12 @@
 <template>
-  <div
-    class="process"
-    :class="{ finished: isFinished }"
-    :style="{ minHeight: `${totalHeight}px` }"
-  >
+  <div class="process" :class="{ finished: isFinished }" :style="{ minHeight: `${totalHeight}px` }">
     <div class="completedOverlay" :style="{ height: `${completedHeight}px` }" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { IProcess } from "../store/models.interface";
+import { IProcess } from "../store/processor-scheduling/models.interface";
 
 @Component
 export default class Process extends Vue {

@@ -1,50 +1,27 @@
 <template>
   <form class="algorithms" @submit.prevent="onRunAlgorithm">
-    <input
-      @click="onAlgorithmSelect(0)"
-      type="radio"
-      id="fcfs"
-      name="algorithm"
-      value="0"
-      checked
-    />
-    <label for="fcfs">FCFS</label><br />
-    <input
-      @click="onAlgorithmSelect(1)"
-      type="radio"
-      id="sjf"
-      name="algorithm"
-      value="1"
-    />
-    <label for="sjf">SJF</label><br />
-    <input
-      @click="onAlgorithmSelect(2)"
-      type="radio"
-      id="psjf"
-      name="algorithm"
-      value="2"
-    />
-    <label for="psjf">preemptive SJF</label><br />
-    <input
-      @click="onAlgorithmSelect(3)"
-      type="radio"
-      id="rot"
-      name="algorithm"
-      value="3"
-    />
-    <label for="rot">ROT</label><br />
+    <input @click="onAlgorithmSelect(0)" type="radio" id="fcfs" name="algorithm" value="0" checked />
+    <label for="fcfs">FCFS</label>
+    <br />
+    <input @click="onAlgorithmSelect(1)" type="radio" id="sjf" name="algorithm" value="1" />
+    <label for="sjf">SJF</label>
+    <br />
+    <input @click="onAlgorithmSelect(2)" type="radio" id="psjf" name="algorithm" value="2" />
+    <label for="psjf">preemptive SJF</label>
+    <br />
+    <input @click="onAlgorithmSelect(3)" type="radio" id="rot" name="algorithm" value="3" />
+    <label for="rot">ROT</label>
+    <br />
     <button :disabled="isAnimationRunning" type="submit">Run</button>
     <div>
-      <button type="button" @click="onReset">
-        Reset
-      </button>
+      <button type="button" @click="onReset">Reset</button>
     </div>
   </form>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { Algorithm } from "../store/models.interface";
+import { Algorithm } from "../store/processor-scheduling/models.interface";
 
 @Component
 export default class AlgorithmSelect extends Vue {

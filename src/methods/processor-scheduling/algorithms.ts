@@ -1,5 +1,8 @@
-import { IProcess, Algorithm } from "@/store/models.interface";
-import store from "../store/index";
+import {
+  IProcess,
+  Algorithm
+} from "@/store/processor-scheduling/models.interface";
+import store from "@/store/processor-scheduling/index";
 
 const isEveryProcessFinished = () => {
   return store.state.processes.every(process => {

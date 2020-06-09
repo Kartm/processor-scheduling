@@ -1,6 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
-import store from "./store";
+import store from "./store/processor-scheduling/index";
 import VueRouter from "vue-router";
 
 // views
@@ -25,22 +25,26 @@ const router = new VueRouter({
     {
       path: "/disk-scheduling",
       component: DiskScheduling,
-      name: "Disk scheduling"
+      name: "Disk scheduling",
+      meta: { hidden: true }
     },
     {
       path: "/page-replacement",
       component: Home,
-      name: "Page replacement"
+      name: "Page replacement",
+      meta: { hidden: true }
     },
     {
       path: "/frame-allocation",
       component: Home,
-      name: "Frame allocation"
+      name: "Frame allocation",
+      meta: { hidden: true }
     },
     {
       path: "/distributed-processor-scheduling",
       component: Home,
-      name: "Distributed processor scheduling"
+      name: "Distributed processor scheduling",
+      meta: { hidden: true }
     }
   ]
 });

@@ -1,4 +1,4 @@
-import { IProcess } from "@/store/models.interface";
+import { IProcess } from "@/store/processor-scheduling/models.interface";
 
 export const generateRandomProcess = () => {
   const randomTime = Math.floor(Math.random() * 10) + 1;
