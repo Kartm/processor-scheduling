@@ -19,7 +19,12 @@ export interface NavigationOption {
 @Component
 export default class TopNavigation extends Vue {
   private get routes() {
-    return (this.$router as any).options.routes;
+    return (this.$router as any).options.routes.filter((route: any) => {
+      if (route.meta && route.meta.hidden) {
+        return false;
+      }
+      return true;
+    });
   }
 }
 </script>
@@ -28,34 +33,37 @@ export default class TopNavigation extends Vue {
 section.navigation {
   position: absolute;
   top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 
   ul {
     display: grid;
     grid-auto-columns: max-content;
     grid-auto-flow: column;
-    gap: 10px;
+    gap: 16px;
     padding: 0;
 
     a {
       color: #0f0f0f;
       text-decoration: none;
       position: relative;
+      font-size: 15px;
 
       &:after {
         position: absolute;
         content: "";
-        height: 2px;
+        height: 1px;
         bottom: -4px;
         margin: 0 auto;
         left: 0;
         right: 0;
-        width: 90%;
+        width: calc(100% - 4px);
         background-color: #5f5f5f33;
       }
 
       &.router-link-exact-active {
         &:after {
-          width: 90%;
+          height: 2px;
           background-color: #5f5f5f;
         }
       }

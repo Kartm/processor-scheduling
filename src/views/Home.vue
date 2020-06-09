@@ -1,5 +1,6 @@
 <template>
-  <div class="home">Various algorithms</div>
+  <div class="home"><h3>Various algorithms</h3>
+  icon by Becris</div>
 </template>
 
 <script lang="ts">

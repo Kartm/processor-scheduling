@@ -1,11 +1,11 @@
 <template>
-  <div class="processor-scheduling">
+  <div class="disk-scheduling">
     <div class="main-view">
       <AxisDescription
-        x-axis-description="Order of the processes"
-        y-axis-description="Time needed"
+        x-axis-description="Position of the task"
+        y-axis-description="Time to deadline"
       />
-      <InfoBox title="Process View">
+      <InfoBox title="Task View">
         <Processes :processes="state.processes" />
       </InfoBox>
     </div>
@@ -65,7 +65,7 @@ import store from "../store/index";
     AxisDescription
   }
 })
-export default class ProcessorScheduling extends Vue {
+export default class DiskScheduling extends Vue {
   private mounted() {
     this.onGenerateRandomButton();
   }
@@ -125,7 +125,7 @@ export default class ProcessorScheduling extends Vue {
 </script>
 
 <style lang="scss">
-div.processor-scheduling {
+div.disk-scheduling {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
@@ -141,6 +141,7 @@ div.processor-scheduling {
       justify-content: center;
       display: flex;
     }
+
     position: relative;
   }
 

@@ -2,8 +2,13 @@
   <div id="app">
     <TopNavigation />
     <section class="container">
-      <router-view />
+      <keep-alive>
+        <router-view />
+      </keep-alive>
     </section>
+    <footer>
+      <span>icon by Becris</span>
+    </footer>
   </div>
 </template>
 
@@ -13,10 +18,6 @@ import TopNavigation, {
   NavigationOption
 } from "./components/TopNavigation.vue";
 import VueRouter from "vue-router";
-
-const navigationOptions = [
-  { text: "Home", targetRoute: "/" }
-] as NavigationOption[];
 
 @Component({
   components: {
@@ -34,7 +35,7 @@ body {
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -43,5 +44,13 @@ body {
   max-width: 768px;
   max-height: 90vh;
   margin: $verticalMargin auto;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 12px;
 }
 </style>

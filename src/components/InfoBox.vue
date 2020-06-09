@@ -1,7 +1,9 @@
 <template>
   <div class="info-box">
     <span class="title">{{ title }}</span>
-    <div class="content"><slot /></div>
+    <div class="content">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -19,7 +21,7 @@ div.info-box {
   display: inline-block;
   position: relative;
   border: 1px #3f3f3f solid;
-  box-sizing: content-box;
+  box-sizing: border-box;
   padding: 30px;
 
   .title {
