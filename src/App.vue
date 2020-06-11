@@ -1,9 +1,8 @@
 <template>
   <div id="app">
-    <TopNavigation />
     <section class="container">
       <keep-alive>
-        <router-view />
+        <ProcessorScheduling />
       </keep-alive>
     </section>
     <footer>
@@ -14,16 +13,9 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import TopNavigation, {
-  NavigationOption
-} from "./components/TopNavigation.vue";
-import VueRouter from "vue-router";
+import ProcessorScheduling from "./views/ProcessorScheduling.vue";
 
-@Component({
-  components: {
-    TopNavigation
-  }
-})
+@Component
 export default class App extends Vue {}
 </script>
 
