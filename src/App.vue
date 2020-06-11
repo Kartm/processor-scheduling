@@ -15,7 +15,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import ProcessorScheduling from "./views/ProcessorScheduling.vue";
 
-@Component
+@Component({ components: { ProcessorScheduling } })
 export default class App extends Vue {}
 </script>
 
